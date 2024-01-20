@@ -4,6 +4,7 @@ import webbrowser
 import subprocess
 import sys
 import os
+import datetime
 
 def say(text, speed=150):
     engine = pyttsx3.init()
@@ -30,6 +31,27 @@ if __name__ == '__main__':
     print("listening")
     query = takeInput()
 
+
+    if "time" in query:
+        time=datetime.datetime.now().strftime("%H:%M:%S")
+        say(f"sir the time is {time}")
+
+
+
+    elif "open music" in query:
+            say("Opening music sir")
+            musicPath = r"C:\Users\LENOVO\Downloads\music.mp3"
+
+            if os.path.exists(musicPath):
+                if sys.platform == "win32":
+                    subprocess.Popen(["start", musicPath], shell=True)
+                elif sys.platform == "darwin":
+                    subprocess.Popen(["open", musicPath])
+                else:
+                    subprocess.Popen(["xdg-open", musicPath])
+            else:
+                say("Music file not found.")    
+
     sites = [["google", "https://www.google.com/"],
              ["youtube", "https://www.youtube.com/"],
              ["chatgpt", "https://openai.com/"]]
@@ -41,16 +63,11 @@ if __name__ == '__main__':
             webbrowser.open(site[1])
             break
 
-        elif "open music" in query:
-            musicPath = r"C:\Users\LENOVO\Downloads\music.mp3"
+    
+    #opneing apps
+    if "open telegram" in query.lower():
+        path = r'""C:\Users\LENOVO\AppData\Roaming\Telegram Desktop\Telegram.exe""'
+        os.system(path)
 
-        if os.path.exists(musicPath):
-            if sys.platform == "win32":
-                subprocess.Popen(["start", musicPath], shell=True)
-            elif sys.platform == "darwin":
-                subprocess.Popen(["open", musicPath])
-            else:
-                subprocess.Popen(["xdg-open", musicPath])
-        else:
-            say("Music file not found.")
-
+    
+        
