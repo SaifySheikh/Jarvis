@@ -7,6 +7,10 @@ import os
 import datetime
 import smtplib
 import requests
+import openai
+
+# Set up OpenAI API key
+openai.api_key = "your_openai_api_key"
 
 def say(text, speed=150):
     engine = pyttsx3.init()
@@ -19,7 +23,6 @@ def takeInput():
     with sr.Microphone() as source:
         r.pause_threshold = 0.8
         audio = r.listen(source, timeout=5)
-        print(audio)
         try:
             query = r.recognize_google(audio, language="en-in")
             print(f"{query}")
@@ -48,6 +51,15 @@ def sendEmail(to, subject, body):
     message = f'Subject: {subject}\n\n{body}'
     server.sendmail("saifyssk04@gmail.com", to, message)
     server.quit()
+
+def writeLetter(topic):
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=f"Write a formal letter about {topic}.",
+        max_tokens=200
+    )
+    letter = response.choices[0].text.strip()
+    return letter
 
 if __name__ == '__main__':
     say("I am Jarvis A.I")
@@ -91,7 +103,7 @@ if __name__ == '__main__':
         weather_report = getWeather(city)
         say(weather_report)
 
-    if "send email" or "send an email" in query.lower():
+    if "send email" in query.lower() or "send an email" in query.lower():
         try:
             say("What is the recipient's email address?")
             to = takeInput()
@@ -116,3 +128,11 @@ if __name__ == '__main__':
         say("Here is your to-do list:")
         for item in todo_list:
             say(item)
+    
+    if "write a letter" in query.lower():
+        say("What is the topic of the letter?")
+        topic = takeInput()
+        letter = writeLetter(topic)
+        say("Here is your letter:")
+        say(letter)
+        print(letter)
